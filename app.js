@@ -50,13 +50,9 @@ document.getElementById("createBtn").addEventListener("click", async function() 
         const baseUrl = window.location.href.replace("admin.html", "").replace("index.html", ""); 
         const studentLink = `${baseUrl}student.html?id=${studentId}`;
 
-        // C. Generate the QR Code
-        document.getElementById("qrcode").innerHTML = ""; 
-        new QRCode(document.getElementById("qrcode"), {
-            text: studentLink,
-            width: 250,
-            height: 250
-        });
+        // C. Generate the QR Code using a reliable Image API
+        const qrCodeUrl = `https://api.qrserver.com/v1/create-qr-code/?size=250x250&data=${encodeURIComponent(studentLink)}`;
+        document.getElementById("qrcode").innerHTML = `<img src="${qrCodeUrl}" alt="Student QR Code" style="border: 1px solid #ccc; border-radius: 8px;">`;
 
         alert("Student added successfully! QR Code generated.");
 
