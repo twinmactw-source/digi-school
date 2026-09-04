@@ -12,7 +12,7 @@
         input, button { padding: 10px; margin: 5px 0; width: 100%; box-sizing: border-box; }
         button { background-color: #007bff; color: white; border: none; cursor: pointer; }
         button:hover { background-color: #0056b3; }
-        #qr-code-box { margin-top: 20px; padding: 20px; border: 2px dashed #ccc; text-align: center; }
+        #-code-box { margin-top: 20px; padding: 20px; border: 2px dashed #ccc; text-align: center; }
     </style>
 </head>
 <body>
@@ -25,7 +25,7 @@
     <input type="text" id="rollNo" placeholder="Roll Number">
     <input type="text" id="className" placeholder="Class & Section">
     
-    <button onclick="registerStudent()">Create Student & Generate QR</button>
+    <button id="createBtn">Create Student & Generate QR</button>
 
     <!-- Where the QR Code will appear -->
     <div id="qr-code-box">
