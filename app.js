@@ -16,8 +16,9 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 
-// 4. The function to save a student and create a QR code
-window.registerStudent = async function() {
+// 4. Listen for the button click
+document.getElementById("createBtn").addEventListener("click", async function() {
+    
     // Get the text from the input boxes
     const name = document.getElementById("studentName").value;
     const rollNo = document.getElementById("rollNo").value;
@@ -29,8 +30,12 @@ window.registerStudent = async function() {
         return;
     }
 
+    // Change button text so you know it's working
+    const btn = document.getElementById("createBtn");
+    btn.innerText = "Creating...";
+
     try {
-        // A. Save the data to Firebase inside a collection called "students"
+        // A. Save the data to Firebase
         const docRef = await addDoc(collection(db, "students"), {
             name: name,
             roll_no: rollNo,
@@ -38,16 +43,15 @@ window.registerStudent = async function() {
             created_at: new Date()
         });
 
-        const studentId = docRef.id; // This is the unique ID Firebase generates!
+        const studentId = docRef.id; 
         console.log("Success! Student ID is:", studentId);
 
         // B. Create the custom link for this specific student
-        // This takes your current URL and points it to student.html
-        const baseUrl = window.location.href.replace("admin.html", ""); 
+        const baseUrl = window.location.href.replace("admin.html", "").replace("index.html", ""); 
         const studentLink = `${baseUrl}student.html?id=${studentId}`;
 
-        // C. Generate the QR Code on the screen
-        document.getElementById("qrcode").innerHTML = ""; // Clear old QR code
+        // C. Generate the QR Code
+        document.getElementById("qrcode").innerHTML = ""; 
         new QRCode(document.getElementById("qrcode"), {
             text: studentLink,
             width: 250,
@@ -56,13 +60,16 @@ window.registerStudent = async function() {
 
         alert("Student added successfully! QR Code generated.");
 
-        // Clear the form boxes for the next student
+        // Clear the form
         document.getElementById("studentName").value = "";
         document.getElementById("rollNo").value = "";
         document.getElementById("className").value = "";
 
     } catch (error) {
         console.error("Error saving to database: ", error);
-        alert("Error saving student. Check the developer console.");
+        alert("Error saving student! Check the console.");
+    } finally {
+        // Reset button text
+        btn.innerText = "Create Student & Generate QR";
     }
-}
+});
