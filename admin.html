@@ -3,39 +3,72 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Admin Dashboard - QR PDF Manager</title>
-    <!-- Import QR Code Generator -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+    <title>Student Documents</title>
     <style>
         body { font-family: Arial, sans-serif; padding: 20px; background-color: #f4f4f9; }
-        .container { max-width: 800px; margin: 0 auto; background: white; padding: 20px; border-radius: 8px; box-shadow: 0 4px 8px rgba(0,0,0,0.1); }
-        input, button { padding: 10px; margin: 5px 0; width: 100%; box-sizing: border-box; }
-        button { background-color: #007bff; color: white; border: none; cursor: pointer; }
-        button:hover { background-color: #0056b3; }
-        #qr-code-box { margin-top: 20px; padding: 20px; border: 2px dashed #ccc; text-align: center; }
+        .container { max-width: 600px; margin: 0 auto; background: white; padding: 20px; border-radius: 8px; box-shadow: 0 4px 8px rgba(0,0,0,0.1); }
+        .doc-card { border: 1px solid #ddd; padding: 15px; margin-top: 10px; border-radius: 5px; background: #fff; }
+        .download-btn { background-color: #28a745; color: white; padding: 8px 12px; text-decoration: none; border-radius: 5px; display: inline-block; margin-top: 10px; }
     </style>
 </head>
 <body>
-
-<div class="container">
-    <h2>Admin Panel: Add New Student</h2>
-    
-    <!-- Student Registration Form -->
-    <input type="text" id="studentName" placeholder="Student Name">
-    <input type="text" id="rollNo" placeholder="Roll Number">
-    <input type="text" id="className" placeholder="Class & Section">
-    
-    <button onclick="registerStudent()">Create Student & Generate QR</button>
-
-    <!-- Where the QR Code will appear -->
-    <div id="qr-code-box">
-        <p>QR Code will appear here</p>
-        <div id="qrcode"></div>
+    <div class="container">
+        <h2 id="student-name">Loading Student Info...</h2>
+        <p><strong>Roll No:</strong> <span id="student-roll">...</span> | <strong>Class:</strong> <span id="student-class">...</span></p>
+        
+        <hr>
+        <h3>Available Documents</h3>
+        <div id="document-list">
+            <p>Checking for documents...</p>
+        </div>
     </div>
-</div>
 
-<!-- Import our custom logic file -->
-<script type="module" src="app.js"></script>
+    <!-- The Logic for the Scanner Page -->
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.13.0/firebase-app.js";
+        import { getFirestore, doc, getDoc } from "https://www.gstatic.com/firebasejs/10.13.0/firebase-firestore.js";
 
+        // Your exact Firebase keys
+        const firebaseConfig = {
+          apiKey: "AIzaSyA0YrLjGNxq4AiaUgdkbPKB5K9I4vazn9w",
+          authDomain: "digi-school-bfcd0.firebaseapp.com",
+          projectId: "digi-school-bfcd0",
+          storageBucket: "digi-school-bfcd0.firebasestorage.app",
+          messagingSenderId: "555147927306",
+          appId: "1:555147927306:web:4586112c5d651ad52524f3"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
+
+        // 1. Get the Student ID from the web address (e.g., ?id=xyz123)
+        const urlParams = new URLSearchParams(window.location.search);
+        const studentId = urlParams.get('id');
+
+        async function loadStudent() {
+            if (!studentId) {
+                document.getElementById('student-name').innerText = "Invalid QR Code (No ID found)";
+                return;
+            }
+
+            // 2. Fetch the student's text data from Firebase
+            const studentRef = doc(db, "students", studentId);
+            const studentSnap = await getDoc(studentRef);
+
+            if (studentSnap.exists()) {
+                const data = studentSnap.data();
+                document.getElementById('student-name').innerText = data.name;
+                document.getElementById('student-roll').innerText = data.roll_no;
+                document.getElementById('student-class').innerText = data.class_section;
+                
+                // For now, it just says no documents. We will build the upload next!
+                document.getElementById('document-list').innerHTML = "<p>No documents uploaded yet.</p>";
+            } else {
+                document.getElementById('student-name').innerText = "Student not found in database!";
+            }
+        }
+
+        loadStudent();
+    </script>
 </body>
 </html>
