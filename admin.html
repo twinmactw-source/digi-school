@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard - QR PDF Manager</title>
+    <!-- Import QR Code Generator -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+    <style>
+        body { font-family: Arial, sans-serif; padding: 20px; background-color: #f4f4f9; }
+        .container { max-width: 800px; margin: 0 auto; background: white; padding: 20px; border-radius: 8px; box-shadow: 0 4px 8px rgba(0,0,0,0.1); }
+        input, button { padding: 10px; margin: 5px 0; width: 100%; box-sizing: border-box; }
+        button { background-color: #007bff; color: white; border: none; cursor: pointer; }
+        button:hover { background-color: #0056b3; }
+        #qr-code-box { margin-top: 20px; padding: 20px; border: 2px dashed #ccc; text-align: center; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h2>Admin Panel: Add New Student</h2>
+    
+    <!-- Student Registration Form -->
+    <input type="text" id="studentName" placeholder="Student Name">
+    <input type="text" id="rollNo" placeholder="Roll Number">
+    <input type="text" id="className" placeholder="Class & Section">
+    
+    <button onclick="registerStudent()">Create Student & Generate QR</button>
+
+    <!-- Where the QR Code will appear -->
+    <div id="qr-code-box">
+        <p>QR Code will appear here</p>
+        <div id="qrcode"></div>
+    </div>
+</div>
+
+<!-- Import our custom logic file -->
+<script type="module" src="app.js"></script>
+
+</body>
+</html>
